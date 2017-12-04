@@ -27,6 +27,21 @@ def entryPersons():
             print("Number of people inside: " + str(personsInsideRoom))
             return personsInsideRoom, isLightUp
 
+def exitPersons():
+    global personsInsideRoom
+    global isLightUp
+    if GPIO.input(movementSensorInsideRoomr) and personsInsideRoom == 1:
+        time.sleep(stepInOutTime)
+        if GPIO.input(movementSensorAtDoor):
+            isLightUp = True
+            personsInsideRoom = personsInsideRoom - 1
+            GPIO.output(led, isLightUp)
+            print("Number of people inside: " + str(personsInsideRoom))
+            return personsInsideRoom, isLightUp
+    else:
+        if personsInsideRoom > 1:
+            personsInsideRoom = personsInsideRoom - 1    
+
 GPIO.output(led, False)
 try:
     while true:
