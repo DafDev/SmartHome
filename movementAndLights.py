@@ -1,7 +1,7 @@
 import GPIO.out as GPIO
 import time
 
-led = 4
+led = 18
 movementSensorAtDoor = 17
 movementSensorInsideRoom = 27
 switchLights = 22
@@ -27,6 +27,7 @@ def entryPersons():
             personsInsideRoom = personsInsideRoom + 1
             GPIO.output(led, isLightUp)
             print("Number of people inside: " + str(personsInsideRoom))
+            time.sleep(stepInOutTime)
             return personsInsideRoom, isLightUp
 
 #function which detects when somene exits the room end switch off
@@ -43,6 +44,7 @@ def exitPersons():
             personsInsideRoom = personsInsideRoom - 1
             GPIO.output(led, isLightUp)
             print("Number of people inside: " + str(personsInsideRoom))
+            time.sleep(stepInOutTime)
             return personsInsideRoom, isLightUp
     else:
         if personsInsideRoom > 1:
@@ -52,7 +54,7 @@ def exitPersons():
 #swich lights function
 def switchLightsFunction():
     global isLightUp
-    if GPIO.input(switchLights):
+    if GPIO.input(switchLights) == False:
         isLightUp = not isLightUp
     GPIO.output(led, isLightUp)
     return isLightUp
