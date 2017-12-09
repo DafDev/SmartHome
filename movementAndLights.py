@@ -12,7 +12,7 @@ stepInOutTime = 0.5
 GPIO.setup(led,GPIO.OUT)
 GPIO.setup(movementSensorAtDoor, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(movementSensorInsideRoom, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(switchLights, GPIO.IN, pull_up_up=GPIO.PUD_UP)
+GPIO.setup(switchLights, GPIO.IN, pull_up_up=GPIO.PUD_DOWN)
 
 #function which detects when somene enters the room end switch on
 #the lights, it also increases the room occupants counter
