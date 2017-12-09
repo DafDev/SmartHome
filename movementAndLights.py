@@ -1,4 +1,4 @@
-import GPIO.out as GPIO
+import RPi.GPIO as GPIO
 import time
 
 led = 18
@@ -9,10 +9,11 @@ personsInsideRoom = 0
 isLightUp = False
 stepInOutTime = 0.5
 
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(led,GPIO.OUT)
 GPIO.setup(movementSensorAtDoor, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(movementSensorInsideRoom, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(switchLights, GPIO.IN, pull_up_up=GPIO.PUD_DOWN)
+GPIO.setup(switchLights, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 #function which detects when somene enters the room end switch on
 #the lights, it also increases the room occupants counter
@@ -26,6 +27,7 @@ def entryPersons():
             isLightUp = True
             personsInsideRoom = personsInsideRoom + 1
             GPIO.output(led, isLightUp)
+            print("Someone entered the room")
             print("Number of people inside: " + str(personsInsideRoom))
             time.sleep(stepInOutTime)
             return personsInsideRoom, isLightUp
@@ -43,6 +45,7 @@ def exitPersons():
             isLightUp = False
             personsInsideRoom = personsInsideRoom - 1
             GPIO.output(led, isLightUp)
+            print("Someone exited the room")
             print("Number of people inside: " + str(personsInsideRoom))
             time.sleep(stepInOutTime)
             return personsInsideRoom, isLightUp
@@ -62,7 +65,7 @@ def switchLightsFunction():
 #main loop
 GPIO.output(led, False)
 try:
-    while true:
+    while True:
         entryPersons()
 except KeyboardInterrupt():
     GPIO.cleanup()
