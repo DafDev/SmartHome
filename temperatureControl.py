@@ -32,21 +32,41 @@ def read_temp():
         temp_c = float(temp_string) / 1000.0
         return temp_c
 
-NUMTEMP = input("Entrez une temperature: ")
-f_NUMTEMP=float(NUMTEMP)
-MIN_NUMTEMP=f_NUMTEMP - 0.5
-MAX_NUMTEMP=f_NUMTEMP + 0.5
-try:
+#Function to achieve the desired temperature
+def achieveDesiredTemperature(numtemp):
     while True:
-        if read_temp() > MIN_NUMTEMP and read_temp() < MAX_NUMTEMP:
+        if read_temp() > f_numtemp:
             GPIO.output(heating,False)
-            print("temperature actuelle: "+str(read_temp())+"°C")
+            print("temperature actuelle: "+str(read_temp())+"C")
         else:
             GPIO.output(heating,True)
-            print("temperature actuelle: "+str(read_temp())+"°C")
+            print("temperature actuelle: "+str(read_temp())+"C")
+
+        print("Temperature atteinte")
+        time.sleep(2)
+        return numtemp
+def keepDesiredTemperature(numtemp):
+    MIN_NUMTEMP=f_numtemp - 0.5
+    while True:
+        if read_temp() > MIN_NUMTEMP :
+            GPIO.output(heating,False)
+            print("temperature actuelle: "+str(read_temp())+"C")
+        else:
+            GPIO.output(heating,True)
+            print("temperature actuelle: "+str(read_temp())+"C")
             print("Temperature atteinte")
             time.sleep(2)
-            NUMTEMP = input("Entrez une temperature: ")
-            f_NUMTEMP=float(NUMTEMP)
+
+def manageDesiredTemperature(numtemp,newvalue=False):
+    achieveDesiredTemperature(numtemp)
+    while newvalue == False:
+        keepDesiredTemperature(numtemp)
+    return numtemp
+
+NUMTEMP = input("Entrez une temperature: ")
+f_NUMTEMP=float(NUMTEMP)
+try:
+    while True:
+        manageDesiredTemperature(f_NUMTEMP)
 except KeyboardInterrupt:
     GPIO.cleanup()
