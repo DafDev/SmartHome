@@ -39,7 +39,7 @@ def entryPersons():
 def exitPersons():
     global personsInsideRoom
     global isLightUp
-    if GPIO.input(movementSensorInsideRoomr) and personsInsideRoom == 1:
+    if GPIO.input(movementSensorInsideRoom) and personsInsideRoom == 1:
         time.sleep(stepInOutTime)
         if GPIO.input(movementSensorAtDoor):
             isLightUp = False
@@ -57,9 +57,10 @@ def exitPersons():
 #swich lights function
 def switchLightsFunction():
     global isLightUp
-    if GPIO.input(switchLights) == False:
+    if GPIO.input(switchLights) == True:
         isLightUp = not isLightUp
-    GPIO.output(led, isLightUp)
+        print("appui bouton")
+        GPIO.output(led, isLightUp)
     return isLightUp
 
 #main loop
@@ -67,5 +68,7 @@ GPIO.output(led, False)
 try:
     while True:
         entryPersons()
+        exitPersons()
+        switchLightsFunction()
 except KeyboardInterrupt():
     GPIO.cleanup()
