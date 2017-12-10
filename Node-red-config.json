@@ -1,0 +1,257 @@
+[
+    {
+        "id": "6391f292.817ecc",
+        "type": "tab",
+        "label": "Temperature control",
+        "disabled": false,
+        "info": "#Temperature control module\nThis module consist of a ds18b2à temperature sensor\nand a resistor. When the desired temperature is higher\nthan the current one a signa lis sent and the resitor \nis heated by an electric current an acts as a heater\n"
+    },
+    {
+        "id": "2bc19814.323758",
+        "type": "rpi-ds18b20",
+        "z": "6391f292.817ecc",
+        "topic": "",
+        "array": false,
+        "name": "Temp sensor",
+        "x": 438,
+        "y": 150,
+        "wires": [
+            [
+                "e8d691f6.c0d8b",
+                "b2cb7d1a.ec1c3",
+                "e9b4bd8a.24908"
+            ]
+        ]
+    },
+    {
+        "id": "e8d691f6.c0d8b",
+        "type": "debug",
+        "z": "6391f292.817ecc",
+        "name": "info",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 930.6363372802734,
+        "y": 148.99999332427979,
+        "wires": []
+    },
+    {
+        "id": "6efd20af.43321",
+        "type": "inject",
+        "z": "6391f292.817ecc",
+        "name": "timestamp",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "x": 235,
+        "y": 150,
+        "wires": [
+            [
+                "2bc19814.323758"
+            ]
+        ]
+    },
+    {
+        "id": "93cda8bf.7e0698",
+        "type": "rpi-gpio out",
+        "z": "6391f292.817ecc",
+        "name": "Heating GPIO26",
+        "pin": "37",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "x": 959.0000152587891,
+        "y": 217.909104347229,
+        "wires": []
+    },
+    {
+        "id": "b2cb7d1a.ec1c3",
+        "type": "function",
+        "z": "6391f292.817ecc",
+        "name": "temperatureControlJS",
+        "func": "context.currentTemperature = context.currentTemperature ;\ncontext.desiredTemperature = context.desiredTempContext ;\n\nif(msg.topic===\"desiredTemperature\"){\n    context.desiredTemperature = msg.payload;\n} else {\n    context.currentTemperature = msg.payload;\n}\n\nif (context.currentTemperature > context.desiredTemperature){\nvar heating = {payload: \"0\"};\n    node.log(\"Current temperature: \"+context.currentTemperature+\"C Desired temperature: \"+context.desiredTemperature+\"C\");\n    node.log(\"Goal achieved\");\n}\nelse{\n    var heating = {payload: \"1\"};\n    node.log(\"Current temperature: \"+context.currentTemperature+\"C Desired temperature: \"+context.desiredTemperature+\"C\");\n}\n    \nreturn heating;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 690.9090614318848,
+        "y": 217.27270889282227,
+        "wires": [
+            [
+                "93cda8bf.7e0698"
+            ]
+        ]
+    },
+    {
+        "id": "e9b4bd8a.24908",
+        "type": "function",
+        "z": "6391f292.817ecc",
+        "name": "temperatureDisplayFunction",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 650.9090728759766,
+        "y": 315.4545726776123,
+        "wires": [
+            [
+                "316294d6.54f43c"
+            ]
+        ]
+    },
+    {
+        "id": "316294d6.54f43c",
+        "type": "ui_gauge",
+        "z": "6391f292.817ecc",
+        "name": "temperatureDisplay",
+        "group": "b21f99e0.4e3c88",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "°Celsius",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "30",
+        "seg2": "50",
+        "x": 962.7272727272726,
+        "y": 318.18181818181813,
+        "wires": []
+    },
+    {
+        "id": "1c8feade.221915",
+        "type": "ui_slider",
+        "z": "6391f292.817ecc",
+        "name": "temperatureControlSlider",
+        "label": "Temperature control",
+        "group": "b21f99e0.4e3c88",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "desiredTemperature",
+        "min": 0,
+        "max": "100",
+        "step": 1,
+        "x": 138.18184661865234,
+        "y": 360.9091491699219,
+        "wires": [
+            [
+                "e95cb440.8dc1a8",
+                "54d900e5.ef68e"
+            ]
+        ],
+        "outputLabels": [
+            "desiredTemperature"
+        ]
+    },
+    {
+        "id": "e95cb440.8dc1a8",
+        "type": "ui_text",
+        "z": "6391f292.817ecc",
+        "group": "b21f99e0.4e3c88",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "tempearatureControlDisplay",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 459.09088134765625,
+        "y": 416.36363410949707,
+        "wires": []
+    },
+    {
+        "id": "54d900e5.ef68e",
+        "type": "function",
+        "z": "6391f292.817ecc",
+        "name": "sendDesiredTemperature",
+        "func": "msg.topic= \"desiredTemperature\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 380.9090576171875,
+        "y": 234.54547786712646,
+        "wires": [
+            [
+                "b2cb7d1a.ec1c3"
+            ]
+        ]
+    },
+    {
+        "id": "12cbb47.7ab7f4c",
+        "type": "ui_switch",
+        "z": "6391f292.817ecc",
+        "name": "lights on/off",
+        "label": "lights on/off",
+        "group": "2cd8e618.9956aa",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "lghtsOnOff",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 179.09090423583984,
+        "y": 588.1818141937256,
+        "wires": [
+            [
+                "9bfe227.72b4ee"
+            ]
+        ]
+    },
+    {
+        "id": "9bfe227.72b4ee",
+        "type": "rpi-gpio out",
+        "z": "6391f292.817ecc",
+        "name": "Lights GPIO18",
+        "pin": "12",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "x": 700,
+        "y": 590.9090909090909,
+        "wires": []
+    },
+    {
+        "id": "b21f99e0.4e3c88",
+        "type": "ui_group",
+        "z": "",
+        "name": "Temperature",
+        "tab": "dd561a64.e27ef8",
+        "disp": true,
+        "width": "8"
+    },
+    {
+        "id": "2cd8e618.9956aa",
+        "type": "ui_group",
+        "z": "",
+        "name": "Lights",
+        "tab": "dd561a64.e27ef8",
+        "disp": true,
+        "width": "8"
+    },
+    {
+        "id": "dd561a64.e27ef8",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "dashboard"
+    }
+]
