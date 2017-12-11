@@ -42,8 +42,8 @@ def achieveDesiredTemperature(numtemp):
         else:
             GPIO.output(heating,True)
             print("Current temperature: "+str(read_temp())+"C Desired temperature: "+str(numtemp)+"C")
-            
-        time.sleep(5)
+
+        time.sleep(2)
         return numtemp
 
 def manageDesiredTemperature(numtemp,newvalue=False):
